@@ -1,18 +1,18 @@
 const fetch = require('node-fetch')
 
 async function fetchDollarValue (date, base, symbol, value) {
-  const response = await fetch(`https://api.fixer.io/${date}?base=${base}&symbols=${symbol}`)
+  const response = await fetch(`http://data.fixer.io/${date}?base=EUR&symbols=${symbol}&access_key=${process.env.FIXER_ACCESS_KEY}`)
 
   if (!response.ok) throw new Error('failed request')
 
   const ratesResponse = await response.json()
 
-  return parseFloat(ratesResponse.rates[symbol], 10) * value
+  return ratesResponse.rates[symbol]
 }
 
 async function main () {
-  const rate = await fetchDollarValue('2017-12-20', 'USD', 'ILS', 1)
-    .then(rate => fetchDollarValue('2017-12-20', 'ILS', 'USD', rate))
+  const rate = await fetchDollarValue('2018-10-13', 'EUR', 'PLN', 1)
+    .then(rate => fetchDollarValue('2018-10-13', 'PLN', 'EUR', rate))
 
   console.log(rate)
 }
